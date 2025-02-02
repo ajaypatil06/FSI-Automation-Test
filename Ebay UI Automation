@@ -1,0 +1,79 @@
+package com.ebay;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+public class BaseTest {
+    protected WebDriver driver;
+
+    @BeforeEach
+    public void setUp() {
+        // Use WebDriverManager to automatically manage the ChromeDriver binary
+        WebDriverManager.chromedriver().setup();
+        
+        // Set up Chrome options (optional)
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); 
+        
+        driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+
+
+package com.ebay;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+public class BaseTest {
+    protected WebDriver driver;
+
+    @BeforeEach
+    public void setUp() {
+        // Use WebDriverManager to automatically manage the ChromeDriver binary
+        WebDriverManager.chromedriver().setup();
+        
+        // Set up Chrome options (optional)
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");  // Run in headless mode (optional)
+        
+        driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+
+public class CartPage {
+    private WebDriver driver;
+
+    private By cartItemCount = By.id("gh-cart-n");  // Cart item count element
+
+    public CartPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    public String getCartItemCount() {
+        return driver.findElement(cartItemCount).getText();
+    }
+}
+
