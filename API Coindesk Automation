@@ -1,0 +1,51 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CoinDeskAPITest {
+
+    private String url = "https://api.coindesk.com/v1/bpi/currentprice.json";
+    private JsonObject responseJson;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        // Send GET request
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(5000);
+
+        // Read the response
+        try (Reader reader = new InputStreamReader(connection.getInputStream())) {
+            responseJson = JsonParser.parseReader(reader).getAsJsonObject();
+        }
+    }
+
+    @Test
+    public void testBpiContainsRequiredCurrencies() {
+        // Verify that 'bpi' contains USD, GBP, EUR
+        JsonObject bpi = responseJson.getAsJsonObject("bpi");
+        
+        assertTrue(bpi.has("USD"), "USD not found in the response");
+        assertTrue(bpi.has("GBP"), "GBP not found in the response");
+        assertTrue(bpi.has("EUR"), "EUR not found in the response");
+    }
+
+    @Test
+    public void testGbpDescription() {
+        // Verify that the description of GBP is "British Pound Sterling"
+        JsonObject gbp = responseJson.getAsJsonObject("bpi").getAsJsonObject("GBP");
+        String description = gbp.get("description").getAsString();
+        
+        assertEquals("British Pound Sterling", description, "GBP description does not match expected value");
+    }
+}
